@@ -1,0 +1,16 @@
+{
+  "name": "engram",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "zod": "4.3.6"
+  },
+  "devDependencies": {
+    "vitest": "4.0.18"
+  },
+  "scripts": {
+    "test": "vitest",
+    "test:run": "vitest run"
+  }
+}
