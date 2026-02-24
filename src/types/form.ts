@@ -1,10 +1,10 @@
 export type FieldType =
-  | "text"
-  | "textarea"
-  | "select"
-  | "radio"
-  | "checkbox"
-  | "richtext";
+  | "Text"
+  | "Textarea"
+  | "Select"
+  | "Radio"
+  | "Checkbox"
+  | "Richtext";
 
 export interface FormField {
   // Must be deterministic hash of DOM path.
