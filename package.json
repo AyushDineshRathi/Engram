@@ -3,15 +3,31 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
+  "contributes": {
+    "configuration": {
+      "properties": {
+        "pgsql.connections": {
+          "items": {}
+        }
+      }
+    }
+  },
   "dependencies": {
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
+    "dexie": "4.3.0",
+    "dotenv": "17.3.1",
+    "pdfjs-dist": "5.4.624",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
     "zod": "4.3.6"
   },
   "devDependencies": {
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^5.1.4",
+    "@types/dexie": "1.3.32",
+    "@types/node": "^25.3.0",
+    "@types/pdfjs-dist": "2.10.377",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "5.1.4",
+    "fake-indexeddb": "^6.2.5",
     "vitest": "4.0.18"
   },
   "scripts": {

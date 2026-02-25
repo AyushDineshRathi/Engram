@@ -96,3 +96,19 @@ Decision:
 - Keep file inputs represented as `FieldType = "Text"` to preserve current data model constraints.
 Consequence:
 - Improved required/type accuracy without portal-specific rules, heuristics, or schema drift.
+
+---
+
+Decision ID: ADR-005
+Date: 2026-02-24
+Context:
+- Phase 3 memory scaffolding required deterministic local persistence and deterministic preprocessing utilities.
+Decision:
+- Added Dexie-backed database schema (`SmartAutoFillDB`) with versioned tables:
+  - `memory_documents`
+  - `memory_chunks`
+  - `embedding_config`
+- Added deterministic whitespace-based chunking utility with overlap stepping and stable chunk IDs.
+- Added Gemini embedding service wrapper using REST `fetch` with model configurability and strict typed output mapping.
+Consequence:
+- Memory ingestion foundation is now modular, deterministic, and separated from UI/business orchestration.
