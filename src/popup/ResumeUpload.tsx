@@ -1,10 +1,16 @@
 import { useState, type ChangeEvent } from "react";
 import { GlobalWorkerOptions, getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 import workerSrc from "pdfjs-dist/legacy/build/pdf.worker.min.mjs?url";
+import { ingestResume } from "../memory/ingestResume";
 
 GlobalWorkerOptions.workerSrc = workerSrc;
 
-type Status = "Idle" | "Extracting..." | "Done" | "Error extracting PDF";
+type Status =
+  | "Idle"
+  | "Processing resume..."
+  | "Resume stored successfully."
+  | "Resume already ingested."
+  | "Error storing resume.";
 
 export default function ResumeUpload() {
   const [status, setStatus] = useState<Status>("Idle");
@@ -13,7 +19,7 @@ export default function ResumeUpload() {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    setStatus("Extracting...");
+    setStatus("Processing resume...");
 
     try {
       const arrayBuffer = await file.arrayBuffer();
@@ -32,11 +38,23 @@ export default function ResumeUpload() {
       }
 
       const fullText = pageTexts.join("\n").replace(/\s+/g, " ").trim();
-      console.log(fullText);
-      setStatus("Done");
+
+      try {
+        await ingestResume({
+          fileName: file.name,
+          rawText: fullText,
+        });
+        setStatus("Resume stored successfully.");
+      } catch (error) {
+        const message = error instanceof Error ? error.message.toLowerCase() : "";
+        if (message.includes("already")) {
+          setStatus("Resume already ingested.");
+        } else {
+          setStatus("Error storing resume.");
+        }
+      }
     } catch (error) {
-      console.error("Error extracting PDF:", error);
-      setStatus("Error extracting PDF");
+      setStatus("Error storing resume.");
     } finally {
       event.target.value = "";
     }
@@ -51,7 +69,7 @@ export default function ResumeUpload() {
           type="file"
           accept="application/pdf,.pdf"
           onChange={handleFileChange}
-          disabled={status === "Extracting..."}
+          disabled={status === "Processing resume..."}
           title="Upload a PDF resume file"
         />
       </label>

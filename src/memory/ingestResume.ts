@@ -27,12 +27,12 @@ function hashString(input: string): string {
   return (hash >>> 0).toString(16).padStart(8, "0");
 }
 
-function createDocumentId(fileName: string, rawText: string): string {
-  return `doc_${hashString(`${fileName}\n${rawText}`)}`;
+function createDocumentId(rawText: string): string {
+  return `doc_${hashString(rawText)}`;
 }
 
 function getEmbeddingModelName(embeddingService: EmbeddingService): string {
-  const model = (embeddingService as { model?: unknown }).model;
+  const model = (embeddingService as unknown as { model?: unknown }).model;
   return typeof model === "string" && model.length > 0 ? model : "unknown";
 }
 
@@ -45,8 +45,13 @@ export async function ingestResume(params: IngestResumeParams): Promise<void> {
     );
   }
 
-  const documentId = createDocumentId(params.fileName, normalizedText);
+  const documentId = createDocumentId(normalizedText);
   const createdAt = Date.now();
+
+  const existingDocument = await db.memory_documents.get(documentId);
+  if (existingDocument) {
+    throw new Error("Resume already ingested.");
+  }
 
   const document: MemoryDocument = {
     id: documentId,
